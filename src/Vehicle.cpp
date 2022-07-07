@@ -32,10 +32,10 @@ void Vehicle::simulate()
 // vehicles should wait for bicycles to pass
 void Vehicle::waitForBicycle()
 {
-    // if(Bicycle::getCurrentBicycleStreet == _currStreet)
-    // {
-
-    // }
+    if(Bicycle::getCurrentBicycleStreet() == this->_currStreet)
+    {
+        
+    }
 }
 
 // virtual function which is executed in a thread
