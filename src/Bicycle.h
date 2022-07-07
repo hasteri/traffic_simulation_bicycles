@@ -16,7 +16,7 @@ public:
     // getters / setters
     void setCurrentStreetBicycle(std::shared_ptr<Street> street) { _currStreet = street; };
     void setCurrentDestination(std::shared_ptr<BicycleIntersection> destination);
-    static std::shared_ptr<Street> getCurrentBicycleStreet(){return _currStreet;};
+    std::shared_ptr<Street> getCurrentBicycleStreet(){return _currStreet;};
 
     // typical behaviour methods
     void simulate();
