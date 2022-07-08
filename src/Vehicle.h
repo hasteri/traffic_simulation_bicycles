@@ -7,6 +7,8 @@
 class Street;
 class Intersection;
 class Bicycle;
+class BicycleIntersection;
+class RidingBicycles;
 
 class Vehicle : public TrafficObject, public std::enable_shared_from_this<Vehicle>
 {

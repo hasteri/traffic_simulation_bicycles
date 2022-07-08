@@ -33,7 +33,26 @@ private:
 
     // private members
     std::vector<std::shared_ptr<Street>> _streets;   // list of all streets connected to this intersection
+    std::vector<std::shared_ptr<Bicycle>> _bicycles;
     bool _isBlocked;                  // flag indicating wether the intersection is blocked by a vehicle
+};
+
+// auxiliary class to gather all bicycles
+class RidingBicycles
+{
+public:
+    // getters / setters
+    int getSize();
+    std::vector<std::shared_ptr<Bicycle>> getAllBicycles() {return _bicycles;}
+    // typical behaviour methods
+    void pushBack(std::shared_ptr<Bicycle> bicycle, std::promise<void> &&promise);
+    //void permitEntryToFirstInQueue();
+    
+
+private:
+    std::vector<std::shared_ptr<Bicycle>> _bicycles;          // list of all vehicles waiting to enter this intersection
+    std::vector<std::promise<void>> _promises; // list of associated promises
+    std::mutex _mutex;
 };
 
 #endif
