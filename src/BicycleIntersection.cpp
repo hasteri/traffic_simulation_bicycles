@@ -4,9 +4,9 @@
 #include <future>
 #include <random>
 
-#include "Street.h"
+#include "Bicycle.h"
+#include "BicycleStreet.h"
 #include "BicycleIntersection.h"
-#include "Vehicle.h"
 
 BicycleIntersection::BicycleIntersection()
 {
@@ -14,16 +14,16 @@ BicycleIntersection::BicycleIntersection()
     _isBlocked = false;
 }
 
-void BicycleIntersection::addStreet(std::shared_ptr<Street> street)
+void BicycleIntersection::addStreet(std::shared_ptr<BicycleStreet> bicycleStreet)
 {
-    _streets.push_back(street);
+    _bicycleStreets.push_back(bicycleStreet);
 }
 
-std::vector<std::shared_ptr<Street>> BicycleIntersection::queryStreets(std::shared_ptr<Street> incoming)
+std::vector<std::shared_ptr<BicycleStreet>> BicycleIntersection::queryStreets(std::shared_ptr<BicycleStreet> incoming)
 {
     // store all outgoing streets in a vector ...
-    std::vector<std::shared_ptr<Street>> outgoings;
-    for (auto it : _streets)
+    std::vector<std::shared_ptr<BicycleStreet>> outgoings;
+    for (auto it : _bicycleStreets)
     {
         if (incoming->getID() != it->getID()) // ... except the street making the inquiry
         {

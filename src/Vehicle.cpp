@@ -31,17 +31,19 @@ void Vehicle::simulate()
 }
 
 // vehicles should wait for bicycles to pass
-void Vehicle::waitForBicycle()
-{
-    for(auto &b : RidingBicycles::getAllBicycles())
-    {
-        if(b.getCurrentBicycleStreet() == this->_currStreet)
-        {
+// void Vehicle::waitForBicycle()
+// {
+//     std::vector<std::shared_ptr<Bicycle>> bicyclesRiding = RidingBicycles::getAllBicycles();
+//     int b = RidingBicycles::getSize();
+//     for(auto &b : bicyclesRiding)
+//     {
+//         if(b.getCurrentBicycleStreet() == this->_currStreet)
+//         {
         
-        }
-    }
+//         }
+//     }
     
-}
+// }
 
 // virtual function which is executed in a thread
 void Vehicle::drive()

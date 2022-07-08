@@ -2,7 +2,6 @@
 #define STREET_H
 
 #include "TrafficObject.h"
-#include "BicycleIntersection.h"
 
 // forward declaration to avoid include cycle
 class Intersection;
@@ -20,11 +19,6 @@ public:
     std::shared_ptr<Intersection> getOutIntersection() { return _interOut; }
     std::shared_ptr<Intersection> getInIntersection() { return _interIn; }
 
-    void setInIntersection(std::shared_ptr<BicycleIntersection> in);
-    void setOutIntersection(std::shared_ptr<BicycleIntersection> out);
-    std::shared_ptr<BicycleIntersection> getOutIntersectionBicycle() { return _interInBicycle; }
-    std::shared_ptr<BicycleIntersection> getInIntersectionBicycle() { return _interOutBicycle; }
-
     // typical behaviour methods
 
     // miscellaneous
@@ -33,7 +27,6 @@ public:
 private:
     double _length;                                                             // length of this street in m
     std::shared_ptr<Intersection> _interIn, _interOut;                          // intersections from which a vehicle can enter (one-way streets is always from 'in' to 'out')
-    std::shared_ptr<BicycleIntersection> _interInBicycle, _interOutBicycle;     // bicycle intersections
 };
 
 #endif

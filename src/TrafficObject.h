@@ -13,6 +13,7 @@ enum ObjectType
     objectIntersection,
     objectBicycleIntersection,
     objectStreet,
+    objectBicycleStreet
 };
 
 class TrafficObject

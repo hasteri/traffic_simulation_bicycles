@@ -5,15 +5,16 @@
 #include "Vehicle.h"
 #include "Bicycle.h"
 #include "Street.h"
+#include "BicycleStreet.h"
 #include "Intersection.h"
 #include "BicycleIntersection.h"
 #include "Graphics.h"
 
 
 // Paris
-void createTrafficObjects_Paris(std::vector<std::shared_ptr<Street>> &streets, std::vector<std::shared_ptr<Intersection>> &intersections, 
-std::vector<std::shared_ptr<BicycleIntersection>> &bicycleIntersections, std::vector<std::shared_ptr<Vehicle>> &vehicles, 
-std::vector<std::shared_ptr<Bicycle>> &bicycles, std::string &filename, int nVehicles, int nBicycles)
+void createTrafficObjects_Paris(std::vector<std::shared_ptr<Street>> &streets, std::vector<std::shared_ptr<BicycleStreet>> &bicycleStreets, 
+std::vector<std::shared_ptr<Intersection>> &intersections, std::vector<std::shared_ptr<BicycleIntersection>> &bicycleIntersections, 
+std::vector<std::shared_ptr<Vehicle>> &vehicles, std::vector<std::shared_ptr<Bicycle>> &bicycles, std::string &filename, int nVehicles, int nBicycles)
 {
     // assign filename of corresponding city map
     filename = "../data/paris.jpg";
@@ -88,63 +89,48 @@ std::vector<std::shared_ptr<Bicycle>> &bicycles, std::string &filename, int nVeh
     int nBicycleStreets = 8;
     for (size_t ns = 0; ns < nBicycleStreets; ns++)
     {
-        //streets.push_back(std::make_shared<Street>());
+        bicycleStreets.push_back(std::make_shared<BicycleStreet>());
     } 
+    
+    bicycleStreets.at(0)->setInIntersectionBicycle(bicycleIntersections.at(0));
+    bicycleStreets.at(0)->setOutIntersectionBicycle(bicycleIntersections.at(1));
 
-    int totalStreets = 15;
-    int p = 0; // helper variable to create bicycle streets
+    bicycleStreets.at(1)->setInIntersectionBicycle(bicycleIntersections.at(2));
+    bicycleStreets.at(1)->setOutIntersectionBicycle(bicycleIntersections.at(3));
 
-    for(int i = 8; i <= totalStreets; i++)
-    {
-        streets.push_back(std::make_shared<Street>());
-    //     for(int j = p; j < p+2; j++)
-    //     {
-    //         streets.at(i)->setInIntersection(bicycleIntersections.at(j));
-    //         streets.at(i)->setOutIntersection(bicycleIntersections.at(j));
-    //     }
-    //     p = p+2;        
-    }
-    streets.at(8)->setInIntersection(bicycleIntersections.at(0));
-    streets.at(8)->setOutIntersection(bicycleIntersections.at(1));
+    bicycleStreets.at(2)->setInIntersectionBicycle(bicycleIntersections.at(4));
+    bicycleStreets.at(2)->setOutIntersectionBicycle(bicycleIntersections.at(5));
 
-    streets.at(9)->setInIntersection(bicycleIntersections.at(2));
-    streets.at(9)->setOutIntersection(bicycleIntersections.at(3));
+    bicycleStreets.at(3)->setInIntersectionBicycle(bicycleIntersections.at(6));
+    bicycleStreets.at(3)->setOutIntersectionBicycle(bicycleIntersections.at(7));
 
-    streets.at(10)->setInIntersection(bicycleIntersections.at(4));
-    streets.at(10)->setOutIntersection(bicycleIntersections.at(5));
+    bicycleStreets.at(4)->setInIntersectionBicycle(bicycleIntersections.at(8));
+    bicycleStreets.at(4)->setOutIntersectionBicycle(bicycleIntersections.at(9));
 
-    streets.at(11)->setInIntersection(bicycleIntersections.at(6));
-    streets.at(11)->setOutIntersection(bicycleIntersections.at(7));
+    bicycleStreets.at(5)->setInIntersectionBicycle(bicycleIntersections.at(10));
+    bicycleStreets.at(5)->setOutIntersectionBicycle(bicycleIntersections.at(11));
 
-    streets.at(12)->setInIntersection(bicycleIntersections.at(8));
-    streets.at(12)->setOutIntersection(bicycleIntersections.at(9));
+    bicycleStreets.at(6)->setInIntersectionBicycle(bicycleIntersections.at(12));
+    bicycleStreets.at(6)->setOutIntersectionBicycle(bicycleIntersections.at(13));
 
-    streets.at(13)->setInIntersection(bicycleIntersections.at(10));
-    streets.at(13)->setOutIntersection(bicycleIntersections.at(11));
-
-    streets.at(14)->setInIntersection(bicycleIntersections.at(12));
-    streets.at(14)->setOutIntersection(bicycleIntersections.at(13));
-
-    streets.at(15)->setInIntersection(bicycleIntersections.at(14));
-    streets.at(15)->setOutIntersection(bicycleIntersections.at(15));
+    bicycleStreets.at(7)->setInIntersectionBicycle(bicycleIntersections.at(14));
+    bicycleStreets.at(7)->setOutIntersectionBicycle(bicycleIntersections.at(15));
 
     // add bicycles to streets
     for (size_t nb = 0; nb < nBicycles; nb++)
     {
         bicycles.push_back(std::make_shared<Bicycle>());
-        // bicycles.at(nb)->setCurrentStreetBicycle(streets.at((nb+8)));
-        // bicycles.at(nb)->setCurrentDestination(bicycleIntersections.at((2*nb+1)));
     }
-    bicycles.at(0)->setCurrentStreetBicycle(streets.at((8)));
+    bicycles.at(0)->setCurrentStreetBicycle(bicycleStreets.at((0)));
     bicycles.at(0)->setCurrentDestination(bicycleIntersections.at(1));
 
-    bicycles.at(1)->setCurrentStreetBicycle(streets.at((10)));
+    bicycles.at(1)->setCurrentStreetBicycle(bicycleStreets.at((2)));
     bicycles.at(1)->setCurrentDestination(bicycleIntersections.at(5));
 
-    bicycles.at(2)->setCurrentStreetBicycle(streets.at((11)));
+    bicycles.at(2)->setCurrentStreetBicycle(bicycleStreets.at((3)));
     bicycles.at(2)->setCurrentDestination(bicycleIntersections.at(7));
 
-    bicycles.at(3)->setCurrentStreetBicycle(streets.at((13)));
+    bicycles.at(3)->setCurrentStreetBicycle(bicycleStreets.at((5)));
     bicycles.at(3)->setCurrentDestination(bicycleIntersections.at(11));
 }
 
@@ -214,6 +200,7 @@ int main()
 
     // create and connect intersections and streets
     std::vector<std::shared_ptr<Street>> streets;
+    std::vector<std::shared_ptr<BicycleStreet>> bicycleStreets;
     std::vector<std::shared_ptr<Intersection>> intersections;
     std::vector<std::shared_ptr<BicycleIntersection>> bicycleIntersections;
     std::vector<std::shared_ptr<Vehicle>> vehicles;
@@ -221,7 +208,7 @@ int main()
     std::string backgroundImg;
     int nVehicles = 6;
     int nBicycles = 4;
-    createTrafficObjects_Paris(streets, intersections, bicycleIntersections, vehicles, bicycles, backgroundImg, nVehicles, nBicycles);
+    createTrafficObjects_Paris(streets, bicycleStreets, intersections, bicycleIntersections, vehicles, bicycles, backgroundImg, nVehicles, nBicycles);
 
     /* PART 2 : simulate traffic objects */
 

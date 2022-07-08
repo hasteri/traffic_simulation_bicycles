@@ -4,7 +4,7 @@
 #include "TrafficObject.h"
 
 // forward declarations to avoid include cycle
-class Street;
+class BicycleStreet;
 class BicycleIntersection;
 
 class Bicycle : public TrafficObject, public std::enable_shared_from_this<Bicycle>
@@ -14,9 +14,9 @@ public:
     Bicycle();
 
     // getters / setters
-    void setCurrentStreetBicycle(std::shared_ptr<Street> street) { _currStreet = street; };
+    void setCurrentStreetBicycle(std::shared_ptr<BicycleStreet> bicycleStreet) { _currStreet = bicycleStreet; };
     void setCurrentDestination(std::shared_ptr<BicycleIntersection> destination);
-    std::shared_ptr<Street> getCurrentBicycleStreet() {return _currStreet;};
+    std::shared_ptr<BicycleStreet> getCurrentBicycleStreet() {return _currStreet;};
 
     // typical behaviour methods
     void simulate();
@@ -28,7 +28,7 @@ private:
     // typical behaviour methods
     void ride();
 
-    std::shared_ptr<Street> _currStreet;            // street on which the vehicle is currently on
+    std::shared_ptr<BicycleStreet> _currStreet;            // street on which the vehicle is currently on
     std::shared_ptr<BicycleIntersection> _currDestination; // destination to which the vehicle is currently driving
     double _posStreet;                              // position on current street
     double _speed;                                  // ego speed in m/s

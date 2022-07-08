@@ -21,15 +21,3 @@ void Street::setOutIntersection(std::shared_ptr<Intersection> out)
     _interOut = out;
     out->addStreet(get_shared_this()); // add this street to list of streets connected to the intersection
 }
-
-void Street::setInIntersection(std::shared_ptr<BicycleIntersection> in)
-{
-    _interInBicycle = in;
-    in->addStreet(get_shared_this()); // add this street to list of streets connected to the intersection
-}
-
-void Street::setOutIntersection(std::shared_ptr<BicycleIntersection> out)
-{
-    _interOutBicycle = out;
-    out->addStreet(get_shared_this()); // add this street to list of streets connected to the intersection
-}

@@ -1,8 +1,8 @@
 #include <iostream>
 #include <random>
-#include "Street.h"
-#include "Intersection.h"
 #include "Bicycle.h"
+#include "BicycleIntersection.h"
+#include "BicycleStreet.h"
 
 Bicycle::Bicycle()
 {
@@ -85,8 +85,8 @@ void Bicycle::ride()
             if (completion >= 1.0 && hasEnteredIntersection)
             {
                 // choose next street and destination
-                std::vector<std::shared_ptr<Street>> streetOptions = _currDestination->queryStreets(_currStreet);
-                std::shared_ptr<Street> nextStreet;
+                std::vector<std::shared_ptr<BicycleStreet>> streetOptions = _currDestination->queryStreets(_currStreet);
+                std::shared_ptr<BicycleStreet> nextStreet;
                 // if (streetOptions.size() > 0)
                 // {
                 //     // pick one street at random and query intersection to enter this street
