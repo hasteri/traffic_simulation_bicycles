@@ -4,6 +4,7 @@
 #include "Intersection.h"
 #include "Vehicle.h"
 #include "Bicycle.h"
+#include "BicycleStreet.h"
 #include "BicycleIntersection.h"
 
 Vehicle::Vehicle()
@@ -34,7 +35,6 @@ void Vehicle::simulate()
 // void Vehicle::waitForBicycle()
 // {
 //     std::vector<std::shared_ptr<Bicycle>> bicyclesRiding = RidingBicycles::getAllBicycles();
-//     int b = RidingBicycles::getSize();
 //     for(auto &b : bicyclesRiding)
 //     {
 //         if(b.getCurrentBicycleStreet() == this->_currStreet)

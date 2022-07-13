@@ -7,6 +7,7 @@
 #include "Bicycle.h"
 #include "BicycleStreet.h"
 #include "BicycleIntersection.h"
+#include "Vehicle.h"
 
 BicycleIntersection::BicycleIntersection()
 {
@@ -34,9 +35,9 @@ std::vector<std::shared_ptr<BicycleStreet>> BicycleIntersection::queryStreets(st
     return outgoings;
 }
 
-void BicycleIntersection::bicycleHasLeft(std::shared_ptr<Bicycle> bicycle)
+void BicycleIntersection::vehicleHasLeft(std::shared_ptr<Vehicle> vehicle)
 {
-    //std::cout << "Intersection #" << _id << ": Vehicle #" << vehicle->getID() << " has left." << std::endl;
+    std::cout << "BicycleIntersection #" << _id << ": Vehicle #" << vehicle->getID() << " has left." << std::endl;
 
     // unblock queue processing
     this->setIsBlocked(false);
@@ -45,7 +46,7 @@ void BicycleIntersection::bicycleHasLeft(std::shared_ptr<Bicycle> bicycle)
 void BicycleIntersection::setIsBlocked(bool isBlocked)
 {
     _isBlocked = isBlocked;
-    //std::cout << "Intersection #" << _id << " isBlocked=" << isBlocked << std::endl;
+    std::cout << "BicycleIntersection #" << _id << " isBlocked=" << isBlocked << std::endl;
 }
 
 // virtual function which is executed in a thread
@@ -54,30 +55,90 @@ void BicycleIntersection::simulate() // using threads + promises/futures + excep
     // FP.6a : In Intersection.h, add a private member _trafficLight of type TrafficLight. At this position, start the simulation of _trafficLight.
     // threads.emplace_back(std::thread(&TrafficLight::simulate, &_trafficLight));
     // launch vehicle queue processing in a thread
-    // threads.emplace_back(std::thread(&BicycleIntersection::processVehicleQueue, this));
+    threads.emplace_back(std::thread(&BicycleIntersection::processVehicleWaitingForBicycle, this));
 }
 
+// adds a new vehicle to the queue and returns once the vehicle is allowed to enter
+void BicycleIntersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
+{
+    std::unique_lock<std::mutex> lck(_mtx);
+    std::cout << "BicycleIntersection #" << _id << "::addVehicleToQueue: thread id = " << std::this_thread::get_id() << std::endl;
+    lck.unlock();
 
+    // add new vehicle to the end of the waiting line
+    std::promise<void> prmsVehicleAllowedToEnter;
+    std::future<void> ftrVehicleAllowedToEnter = prmsVehicleAllowedToEnter.get_future();
+    _vehicleWaitingForBicycles.pushBack(vehicle, std::move(prmsVehicleAllowedToEnter));
 
+    // wait until the vehicle is allowed to enter
+    ftrVehicleAllowedToEnter.wait();
+    lck.lock();
+    std::cout << "BicycleIntersection #" << _id << ": Vehicle #" << vehicle->getID() << " is granted entry." << std::endl;
+    
+    // FP.6b : use the methods TrafficLight::getCurrentPhase and TrafficLight::waitForGreen to block the execution until the traffic light turns green.
 
-/* Implementation of class "WaitingVehicles" */
+    lck.unlock();
 
-int RidingBicycles::getSize()
+    if(bicycleIsRiding())
+    {
+        _bicycles.waitForBicycle(); // vehicle should wait for bicycle !!!
+    }
+}
+
+void BicycleIntersection::processVehicleWaitingForBicycle()
+{
+    // print id of the current thread
+    std::cout << "BicycleIntersection #" << _id << "::processVehicleWaitingForBicycle: thread id = " << std::this_thread::get_id() << std::endl;
+
+    // continuously process the vehicle queue
+    while (true)
+    {
+        // sleep at every iteration to reduce CPU usage
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+        // only proceed when at least one vehicle is waiting in the queue
+        if (_vehicleWaitingForBicycles.getSize() > 0 && !_isBlocked)
+        {
+            // set intersection to "blocked" to prevent other vehicles from entering
+            this->setIsBlocked(true);
+
+            // permit entry to first vehicle in the queue (FIFO)
+            _vehicleWaitingForBicycles.permitEntryToFirstInQueue();
+        }
+    }
+}
+
+bool BicycleIntersection::bicycleIsRiding()
+{
+   // please include this part once you have solved the final project tasks
+   
+   if (_bicycles.getCurrentStatus() == BicycleRidingStatus::passingTheStreet)
+       return true;
+   else
+       return false;
+   
+
+  return true; // makes traffic light permanently green
+} 
+
+/* Implementation of class "VehicleWaitingForBicycle" */
+
+int VehicleWaitingForBicycle::getSize()
 {
     std::lock_guard<std::mutex> lock(_mutex);
 
-    return _bicycles.size();
+    return _vehicles.size();
 }
 
-void RidingBicycles::pushBack(std::shared_ptr<Bicycle> bicycle, std::promise<void> &&promise)
+void VehicleWaitingForBicycle::pushBack(std::shared_ptr<Vehicle> vehicle, std::promise<void> &&promise)
 {
     std::lock_guard<std::mutex> lock(_mutex);
 
-    _bicycles.push_back(bicycle);
+    _vehicles.push_back(vehicle);
     _promises.push_back(std::move(promise));
 }
-/*
-void RidingBicycles::permitEntryToFirstInQueue()
+
+void VehicleWaitingForBicycle::permitEntryToFirstInQueue()
 {
     std::lock_guard<std::mutex> lock(_mutex);
 
@@ -92,4 +153,3 @@ void RidingBicycles::permitEntryToFirstInQueue()
     _vehicles.erase(firstVehicle);
     _promises.erase(firstPromise);
 }
-*/

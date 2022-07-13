@@ -124,14 +124,14 @@ std::vector<std::shared_ptr<Vehicle>> &vehicles, std::vector<std::shared_ptr<Bic
     bicycles.at(0)->setCurrentStreetBicycle(bicycleStreets.at((0)));
     bicycles.at(0)->setCurrentDestination(bicycleIntersections.at(1));
 
-    bicycles.at(1)->setCurrentStreetBicycle(bicycleStreets.at((2)));
-    bicycles.at(1)->setCurrentDestination(bicycleIntersections.at(5));
+    // bicycles.at(1)->setCurrentStreetBicycle(bicycleStreets.at((2)));
+    // bicycles.at(1)->setCurrentDestination(bicycleIntersections.at(5));
 
-    bicycles.at(2)->setCurrentStreetBicycle(bicycleStreets.at((3)));
-    bicycles.at(2)->setCurrentDestination(bicycleIntersections.at(7));
+    // bicycles.at(2)->setCurrentStreetBicycle(bicycleStreets.at((3)));
+    // bicycles.at(2)->setCurrentDestination(bicycleIntersections.at(7));
 
-    bicycles.at(3)->setCurrentStreetBicycle(bicycleStreets.at((5)));
-    bicycles.at(3)->setCurrentDestination(bicycleIntersections.at(11));
+    // bicycles.at(3)->setCurrentStreetBicycle(bicycleStreets.at((5)));
+    // bicycles.at(3)->setCurrentDestination(bicycleIntersections.at(11));
 }
 
 // NYC
@@ -207,7 +207,7 @@ int main()
     std::vector<std::shared_ptr<Bicycle>> bicycles;
     std::string backgroundImg;
     int nVehicles = 6;
-    int nBicycles = 4;
+    int nBicycles = 1;
     createTrafficObjects_Paris(streets, bicycleStreets, intersections, bicycleIntersections, vehicles, bicycles, backgroundImg, nVehicles, nBicycles);
 
     /* PART 2 : simulate traffic objects */

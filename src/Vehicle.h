@@ -7,6 +7,7 @@
 class Street;
 class Intersection;
 class Bicycle;
+class BicycleStreet;
 class BicycleIntersection;
 class RidingBicycles;
 

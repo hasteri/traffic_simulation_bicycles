@@ -4,6 +4,28 @@
 #include "BicycleIntersection.h"
 #include "BicycleStreet.h"
 
+template<typename T1>
+T1 WaitForBicycleQueue<T1>::receive()
+{
+    std::unique_lock<std::mutex> uLock(_mtx);
+    _cond.wait(uLock, [this] {return !_queue.empty();});
+    T1 message = std::move(_queue.back());
+    _queue.pop_back(); 
+
+    return message;
+}
+
+template <typename T1>
+void WaitForBicycleQueue<T1>::send(T1 &&message)
+{
+    // FP.4a : The method send should use the mechanisms std::lock_guard<std::mutex> 
+    // as well as _condition.notify_one() to add a new message to the queue and afterwards send a notification.
+    std::lock_guard<std::mutex> myLock(_mtx);
+
+    _queue.push_back(std::move(message));
+    _cond.notify_one();
+}
+
 Bicycle::Bicycle()
 {
     _currStreet = nullptr;
@@ -12,6 +34,16 @@ Bicycle::Bicycle()
     _speed = 150; // m/s
 }
 
+void Bicycle::waitForBicycle()
+{
+    while(true)
+    {        
+        if(_bicycleQueue.receive() == BicycleRidingStatus::goingToIntersection)
+        {
+            break;
+        }
+    }
+}
 
 void Bicycle::setCurrentDestination(std::shared_ptr<BicycleIntersection> destination)
 {
@@ -31,6 +63,7 @@ void Bicycle::simulate()
 // virtual function which is executed in a thread
 void Bicycle::ride()
 {
+    _ridingStatus = BicycleRidingStatus::passingTheStreet;
     // print id of the current thread
     std::unique_lock<std::mutex> lck(_mtx);
     std::cout << "Bicycle #" << _id << "::ride: thread id = " << std::this_thread::get_id() << std::endl;
@@ -78,9 +111,10 @@ void Bicycle::ride()
                 // slow down and set intersection flag
                 _speed /= 10.0;
                 hasEnteredIntersection = true;
+                _ridingStatus = BicycleRidingStatus::goingToIntersection;
             }
             
-
+            _ridingStatus = BicycleRidingStatus::passingTheStreet;
             // check wether intersection has been crossed
             if (completion >= 1.0 && hasEnteredIntersection)
             {
@@ -106,7 +140,7 @@ void Bicycle::ride()
                 == _currDestination->getID() ? nextStreet->getOutIntersectionBicycle() : nextStreet->getInIntersectionBicycle(); 
 
                 // send signal to intersection that vehicle has left the intersection
-                _currDestination->bicycleHasLeft(get_shared_this());
+                // _currDestination->bicycleHasLeft(get_shared_this());
 
                 // assign new street and destination
                 this->setCurrentDestination(nextIntersection);

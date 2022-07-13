@@ -95,18 +95,7 @@ void TrafficLight::cycleThroughPhases()
         if(timeDifference >= randNum)
         {            
             t1 = std::chrono::high_resolution_clock::now(); 
-            _currentPhase = (_currentPhase == TrafficLightPhase::green) ? red : green; // Please watch the attached video ifElse_vs_ternaryOperator.mp4. 
-			// it is very weird that the toggling happens using the ternary operator, but it does not happen when using the if_else condition....can you please explain? 
-            /*
-            if(_currentPhase == green)
-            {
-                _currentPhase = red;
-            }
-            else
-            {
-                _currentPhase = green;
-            }
-            */
+            _currentPhase = (_currentPhase == TrafficLightPhase::green) ? red : green; 
             _messageQueue.send(std::move(_currentPhase));    
         }                   
     }    
