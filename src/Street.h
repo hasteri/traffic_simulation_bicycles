@@ -19,6 +19,9 @@ public:
     std::shared_ptr<Intersection> getOutIntersection() { return _interOut; }
     std::shared_ptr<Intersection> getInIntersection() { return _interIn; }
 
+    void setVehicleStreetIndex(int index);
+    int getVehicleStreetIndex(){return _index;};
+
     // typical behaviour methods
 
     // miscellaneous
@@ -27,6 +30,7 @@ public:
 private:
     double _length;                                                             // length of this street in m
     std::shared_ptr<Intersection> _interIn, _interOut;                          // intersections from which a vehicle can enter (one-way streets is always from 'in' to 'out')
+    int _index;
 };
 
 #endif

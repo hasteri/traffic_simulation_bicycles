@@ -39,26 +39,32 @@ public:
     // getters / setters
     void setCurrentStreetBicycle(std::shared_ptr<BicycleStreet> bicycleStreet) { _currStreet = bicycleStreet; };
     void setCurrentDestination(std::shared_ptr<BicycleIntersection> destination);
-    std::shared_ptr<BicycleStreet> getCurrentBicycleStreet() {return _currStreet;};
+    auto getCurrentBicycleStreet() {return _currStreet;};
     void waitForBicycle();
     BicycleRidingStatus getCurrentStatus() {return _ridingStatus;};
+    bool bicycleIsRiding();
+    int getSpeed(){return _speed;};
+
+    bool bicycleBlocking();
 
     // typical behaviour methods
     void simulate();
 
     // miscellaneous
     // std::shared_ptr<Bicycle> get_shared_this() { return shared_from_this(); }
+    BicycleRidingStatus _ridingStatus;
+    void ride();
 
 private:
     // typical behaviour methods
-    void ride();
+    
 
     std::shared_ptr<BicycleStreet> _currStreet;            // street on which the vehicle is currently on
     std::shared_ptr<BicycleIntersection> _currDestination; // destination to which the vehicle is currently driving
     double _posStreet;                              // position on current street
     double _speed;                                  // ego speed in m/s
 
-    BicycleRidingStatus _ridingStatus;
+    
     WaitForBicycleQueue<BicycleRidingStatus> _bicycleQueue;
     std::condition_variable _condition;
     std::mutex _mutex;

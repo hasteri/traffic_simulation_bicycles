@@ -22,3 +22,8 @@ void BicycleStreet::setOutIntersectionBicycle(std::shared_ptr<BicycleIntersectio
     _interOutBicycle = out;
     out->addStreet(get_shared_this()); // add this street to list of streets connected to the intersection
 }
+
+void BicycleStreet::setBicycleStreetIndex(int index)
+{
+    _index = index;
+}

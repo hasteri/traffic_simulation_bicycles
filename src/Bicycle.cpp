@@ -32,6 +32,7 @@ Bicycle::Bicycle()
     _posStreet = 0.0;
     _type = ObjectType::objectBicycle;
     _speed = 150; // m/s
+    _ridingStatus = BicycleRidingStatus::passingTheStreet;
 }
 
 void Bicycle::waitForBicycle()
@@ -44,6 +45,20 @@ void Bicycle::waitForBicycle()
         }
     }
 }
+
+bool Bicycle::bicycleBlocking()
+{
+    if(_ridingStatus == BicycleRidingStatus::passingTheStreet)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
 
 void Bicycle::setCurrentDestination(std::shared_ptr<BicycleIntersection> destination)
 {
@@ -107,17 +122,21 @@ void Bicycle::ride()
             this->setPosition(xv, yv);
 
             if (completion >= 0.9 && !hasEnteredIntersection)
-            {
+            {                
                 // slow down and set intersection flag
-                _speed /= 10.0;
-                hasEnteredIntersection = true;
+                _speed = 15.0;
+                hasEnteredIntersection = true;     
                 _ridingStatus = BicycleRidingStatus::goingToIntersection;
+                std::cout << "Now bicycle has speed of " << getSpeed() << std::endl;           
             }
             
-            _ridingStatus = BicycleRidingStatus::passingTheStreet;
+            
             // check wether intersection has been crossed
             if (completion >= 1.0 && hasEnteredIntersection)
             {
+                std::cout << "Now bicycle " << _ridingStatus << std::endl;
+                _ridingStatus = BicycleRidingStatus::passingTheStreet;
+                std::cout << "Now bicycle " << _ridingStatus << std::endl;
                 // choose next street and destination
                 std::vector<std::shared_ptr<BicycleStreet>> streetOptions = _currDestination->queryStreets(_currStreet);
                 std::shared_ptr<BicycleStreet> nextStreet;
@@ -156,3 +175,17 @@ void Bicycle::ride()
         }
     } // eof simulation loop
 }
+
+
+// bool Bicycle::bicycleIsRiding()
+// {
+//    // please include this part once you have solved the final project tasks
+   
+//    if (_ridingStatus == BicycleRidingStatus::passingTheStreet)
+//        return true;
+//    else
+//        return false;
+   
+
+//   return true; // makes traffic light permanently green
+// } 

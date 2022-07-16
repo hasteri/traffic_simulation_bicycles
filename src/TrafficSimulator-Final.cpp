@@ -73,6 +73,8 @@ std::vector<std::shared_ptr<Vehicle>> &vehicles, std::vector<std::shared_ptr<Bic
     for (size_t ns = 0; ns < nStreets; ns++)
     {
         streets.push_back(std::make_shared<Street>());
+        streets.back()->setVehicleStreetIndex(ns);
+        //std::cout << streets.back()->getVehicleStreetIndex() << std::endl;
         streets.at(ns)->setInIntersection(intersections.at(ns));
         streets.at(ns)->setOutIntersection(intersections.at(8));
     }
@@ -90,6 +92,8 @@ std::vector<std::shared_ptr<Vehicle>> &vehicles, std::vector<std::shared_ptr<Bic
     for (size_t ns = 0; ns < nBicycleStreets; ns++)
     {
         bicycleStreets.push_back(std::make_shared<BicycleStreet>());
+        bicycleStreets.back()->setBicycleStreetIndex(ns);
+        //std::cout << bicycleStreets.back()->getBicycleStreetIndex() << std::endl;
     } 
     
     bicycleStreets.at(0)->setInIntersectionBicycle(bicycleIntersections.at(0));
@@ -124,8 +128,8 @@ std::vector<std::shared_ptr<Vehicle>> &vehicles, std::vector<std::shared_ptr<Bic
     bicycles.at(0)->setCurrentStreetBicycle(bicycleStreets.at((0)));
     bicycles.at(0)->setCurrentDestination(bicycleIntersections.at(1));
 
-    // bicycles.at(1)->setCurrentStreetBicycle(bicycleStreets.at((2)));
-    // bicycles.at(1)->setCurrentDestination(bicycleIntersections.at(5));
+    bicycles.at(1)->setCurrentStreetBicycle(bicycleStreets.at((1)));
+    bicycles.at(1)->setCurrentDestination(bicycleIntersections.at(3));
 
     // bicycles.at(2)->setCurrentStreetBicycle(bicycleStreets.at((3)));
     // bicycles.at(2)->setCurrentDestination(bicycleIntersections.at(7));
@@ -134,65 +138,6 @@ std::vector<std::shared_ptr<Vehicle>> &vehicles, std::vector<std::shared_ptr<Bic
     // bicycles.at(3)->setCurrentDestination(bicycleIntersections.at(11));
 }
 
-// NYC
-/*
-void createTrafficObjects_NYC(std::vector<std::shared_ptr<Street>> &streets, std::vector<std::shared_ptr<Intersection>> &intersections, std::vector<std::shared_ptr<Vehicle>> &vehicles, std::string &filename, int nVehicles)
-{
-    // assign filename of corresponding city map
-    filename = "../data/nyc.jpg";
-
-    // init traffic objects
-    int nIntersections = 6;
-    for (size_t ni = 0; ni < nIntersections; ni++)
-    {
-        intersections.push_back(std::make_shared<Intersection>());
-    }
-
-    // position intersections in pixel coordinates
-    intersections.at(0)->setPosition(1430, 625);
-    intersections.at(1)->setPosition(2575, 1260);
-    intersections.at(2)->setPosition(2200, 1950);
-    intersections.at(3)->setPosition(1000, 1350);
-    intersections.at(4)->setPosition(400, 1000);
-    intersections.at(5)->setPosition(750, 250);
-
-    // create streets and connect traffic objects
-    int nStreets = 7;
-    for (size_t ns = 0; ns < nStreets; ns++)
-    {
-        streets.push_back(std::make_shared<Street>());
-    }
-
-    streets.at(0)->setInIntersection(intersections.at(0));
-    streets.at(0)->setOutIntersection(intersections.at(1));
-
-    streets.at(1)->setInIntersection(intersections.at(1));
-    streets.at(1)->setOutIntersection(intersections.at(2));
-
-    streets.at(2)->setInIntersection(intersections.at(2));
-    streets.at(2)->setOutIntersection(intersections.at(3));
-
-    streets.at(3)->setInIntersection(intersections.at(3));
-    streets.at(3)->setOutIntersection(intersections.at(4));
-
-    streets.at(4)->setInIntersection(intersections.at(4));
-    streets.at(4)->setOutIntersection(intersections.at(5));
-
-    streets.at(5)->setInIntersection(intersections.at(5));
-    streets.at(5)->setOutIntersection(intersections.at(0));
-
-    streets.at(6)->setInIntersection(intersections.at(0));
-    streets.at(6)->setOutIntersection(intersections.at(3));
-
-    // add vehicles to streets
-    for (size_t nv = 0; nv < nVehicles; nv++)
-    {
-        vehicles.push_back(std::make_shared<Vehicle>());
-        vehicles.at(nv)->setCurrentStreet(streets.at(nv));
-        vehicles.at(nv)->setCurrentDestination(intersections.at(nv));
-    }
-}
-*/
 /* Main function */
 int main()
 {
@@ -207,11 +152,24 @@ int main()
     std::vector<std::shared_ptr<Bicycle>> bicycles;
     std::string backgroundImg;
     int nVehicles = 6;
-    int nBicycles = 1;
+    int nBicycles = 2;
     createTrafficObjects_Paris(streets, bicycleStreets, intersections, bicycleIntersections, vehicles, bicycles, backgroundImg, nVehicles, nBicycles);
 
     /* PART 2 : simulate traffic objects */
+    
+    // std::for_each(streets.begin(), streets.end(), [](std::shared_ptr<Street> &s) {
+    //     std::cout << s->getVehicleStreetIndex() << std::endl;
+    // });
+    // std::for_each(bicycles.begin(), bicycles.end(), [](std::shared_ptr<BicycleStreet> &bs) {
+    //     std::cout << bs. << std::endl;
+    // });
 
+    // std::cout << "Size if bicycles is " << bicycles.size() << std::endl;
+
+    for(int i = 0; i < bicycles.size(); i++)
+    {
+        vehicles.at(i)->setBicycleBlocking(true);           
+    }
     // simulate intersection
     std::for_each(intersections.begin(), intersections.end(), [](std::shared_ptr<Intersection> &i) {
         i->simulate();
@@ -231,6 +189,8 @@ int main()
     std::for_each(bicycles.begin(), bicycles.end(), [](std::shared_ptr<Bicycle> &b) {
         b->simulate();
     });
+
+    
 
     /* PART 3 : Launch visualization */
 
@@ -261,4 +221,13 @@ int main()
     graphics->setBgFilename(backgroundImg);
     graphics->setTrafficObjects(trafficObjects);
     graphics->simulate();
+
+    
+    // if(bicycles.at(0)->getSpeed() <= 150)
+    // {
+    //     vehicles.at(0)->setSpeed(10);
+    // }
+    vehicles.at(0)->setBicycleBlocking(false);
+
+    //vehicles.at(0)->waitForBicycle(bicycles.at(0));
 }

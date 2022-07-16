@@ -56,7 +56,7 @@ public:
 private:
 
     // typical behaviour methods
-    void processVehicleWaitingForBicycle();
+   // void processVehicleWaitingForBicycle();
 
     // private members
     std::vector<std::shared_ptr<BicycleStreet>> _bicycleStreets;   // list of all streets connected to this intersection

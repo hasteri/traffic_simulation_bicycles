@@ -18,6 +18,9 @@ public:
     void setOutIntersectionBicycle(std::shared_ptr<BicycleIntersection> out);
     std::shared_ptr<BicycleIntersection> getOutIntersectionBicycle() { return _interInBicycle; }
     std::shared_ptr<BicycleIntersection> getInIntersectionBicycle() { return _interOutBicycle; }
+    void connectToVehicleStreet();
+    void setBicycleStreetIndex(int index);
+    int getBicycleStreetIndex(){return _index;};
 
     // typical behaviour methods
 
@@ -27,6 +30,8 @@ public:
 private:
     double _length;                                                             // length of this street in m
     std::shared_ptr<BicycleIntersection> _interInBicycle, _interOutBicycle;     // bicycle intersections
+    //std::shared_ptr<Street> _vehicleStreet;
+    int _index;
 };
 
 #endif

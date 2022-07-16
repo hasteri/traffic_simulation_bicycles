@@ -27,23 +27,56 @@ void Vehicle::setCurrentDestination(std::shared_ptr<Intersection> destination)
 
 void Vehicle::simulate()
 {
+    //threads.emplace_back(std::thread(&Bicycle::ride, &_bicycle));
     // launch drive function in a thread
     threads.emplace_back(std::thread(&Vehicle::drive, this));
 }
 
-// vehicles should wait for bicycles to pass
-// void Vehicle::waitForBicycle()
+// bool Vehicle::bicycleBlocking()
 // {
-//     std::vector<std::shared_ptr<Bicycle>> bicyclesRiding = RidingBicycles::getAllBicycles();
-//     for(auto &b : bicyclesRiding)
+//     if(getCurrentStatus() == BicycleRidingStatus::passingTheStreet)
 //     {
-//         if(b.getCurrentBicycleStreet() == this->_currStreet)
-//         {
-        
-//         }
+//         return true;
 //     }
-    
+//     else
+//     {
+//         return false;
+//     }
 // }
+
+bool Vehicle::bicycleBlocking()
+{    
+    return _block;
+}
+
+bool getCurrentStatus()
+{
+    //return Bicycle::getCurrentStatus();
+}
+
+// vehicles should wait for bicycles to pass
+// void Vehicle::waitForBicycle(std::shared_ptr<Bicycle> bicycle)
+// {      
+//     _speed = 0;
+//     while(true)
+//     {    
+//         if(!bicycle->bicycleIsRiding())
+//         {
+//             _speed = 400; // m/s
+//             break;
+//         }   
+//     }  
+// }
+
+/* - Get the riding status of the bicycle
+while(true)
+    {        
+        if(_ridingStatus == BicycleRidingStatus::goingToIntersection)
+        {
+            break;
+        }
+    }
+*/
 
 // virtual function which is executed in a thread
 void Vehicle::drive()
@@ -51,6 +84,7 @@ void Vehicle::drive()
     // print id of the current thread
     std::unique_lock<std::mutex> lck(_mtx);
     std::cout << "Vehicle #" << _id << "::drive: thread id = " << std::this_thread::get_id() << std::endl;
+    // std::cout << "CurrentVehicleStreet        " << getCurrentVehicleStreet() << "   !!!!! " << std::endl;
     lck.unlock();
 
     // initalize variables
@@ -80,6 +114,7 @@ void Vehicle::drive()
             i2 = _currDestination;
             i1 = i2->getID() == _currStreet->getInIntersection()->getID() ? _currStreet->getOutIntersection() : _currStreet->getInIntersection();
 
+            
             double x1, y1, x2, y2, xv, yv, dx, dy, l;
             i1->getPosition(x1, y1);
             i2->getPosition(x2, y2);
@@ -89,6 +124,35 @@ void Vehicle::drive()
             xv = x1 + completion * dx; // new position based on line equation in parameter form
             yv = y1 + completion * dy;
             this->setPosition(xv, yv);
+
+            
+            std::shared_ptr<Bicycle> bicycles = std::make_shared<Bicycle>();
+            std::shared_ptr<Street> street = std::make_shared<Street>();
+            std::shared_ptr<BicycleStreet> bicycleStreet = std::make_shared<BicycleStreet>();
+
+            Bicycle b;
+
+            // std::cout << "BicycleStreets" << bicycleStreet->getBicycleStreetIndex() << std::endl;
+            // std::cout << "Streets" << street->getVehicleStreetIndex() << std::endl;
+            
+            if(bicycleStreet->getBicycleStreetIndex() == street->getVehicleStreetIndex())
+            {
+                //std::cout << "We did it !!!" << std::endl;
+            }
+
+            //if(bicycles->bicycleBlocking())
+            if(bicycleBlocking())
+            {
+                //std::cout << bicycles->getSpeed() << std::endl;
+                //std::cout << bicycle->getCurrentStatus() << std::endl;
+                //std::cout << b.getSpeed() << std::endl;
+                _speed = 100;
+            }  
+
+            // if(bicycle->getCurrentBicycleStreet() == getCurrentVehicleStreet())
+            // {
+            //     waitForBicycle(bicycle);
+            // }
 
             // check wether halting position in front of destination has been reached
             if (completion >= 0.9 && !hasEnteredIntersection)
@@ -109,6 +173,7 @@ void Vehicle::drive()
             {
                 // choose next street and destination
                 std::vector<std::shared_ptr<Street>> streetOptions = _currDestination->queryStreets(_currStreet);
+                //std::vector<std::shared_ptr<BicycleStreet>> probablyBlockedStreets = _currDestination->queryStreets(_currStreet);
                 std::shared_ptr<Street> nextStreet;
                 if (streetOptions.size() > 0)
                 {

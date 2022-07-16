@@ -55,7 +55,7 @@ void BicycleIntersection::simulate() // using threads + promises/futures + excep
     // FP.6a : In Intersection.h, add a private member _trafficLight of type TrafficLight. At this position, start the simulation of _trafficLight.
     // threads.emplace_back(std::thread(&TrafficLight::simulate, &_trafficLight));
     // launch vehicle queue processing in a thread
-    threads.emplace_back(std::thread(&BicycleIntersection::processVehicleWaitingForBicycle, this));
+    //threads.emplace_back(std::thread(&BicycleIntersection::processVehicleWaitingForBicycle, this));
 }
 
 // adds a new vehicle to the queue and returns once the vehicle is allowed to enter
@@ -79,47 +79,47 @@ void BicycleIntersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
 
     lck.unlock();
 
-    if(bicycleIsRiding())
-    {
-        _bicycles.waitForBicycle(); // vehicle should wait for bicycle !!!
-    }
+    // if(bicycleIsRiding())
+    // {
+    //     _bicycles.waitForBicycle(); // vehicle should wait for bicycle !!!
+    // }
 }
 
-void BicycleIntersection::processVehicleWaitingForBicycle()
-{
-    // print id of the current thread
-    std::cout << "BicycleIntersection #" << _id << "::processVehicleWaitingForBicycle: thread id = " << std::this_thread::get_id() << std::endl;
+// void BicycleIntersection::processVehicleWaitingForBicycle()
+// {
+//     // print id of the current thread
+//     std::cout << "BicycleIntersection #" << _id << "::processVehicleWaitingForBicycle: thread id = " << std::this_thread::get_id() << std::endl;
 
-    // continuously process the vehicle queue
-    while (true)
-    {
-        // sleep at every iteration to reduce CPU usage
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+//     // continuously process the vehicle queue
+//     while (true)
+//     {
+//         // sleep at every iteration to reduce CPU usage
+//         std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-        // only proceed when at least one vehicle is waiting in the queue
-        if (_vehicleWaitingForBicycles.getSize() > 0 && !_isBlocked)
-        {
-            // set intersection to "blocked" to prevent other vehicles from entering
-            this->setIsBlocked(true);
+//         // only proceed when at least one vehicle is waiting in the queue
+//         if (_vehicleWaitingForBicycles.getSize() > 0 && !_isBlocked)
+//         {
+//             // set intersection to "blocked" to prevent other vehicles from entering
+//             this->setIsBlocked(true);
 
-            // permit entry to first vehicle in the queue (FIFO)
-            _vehicleWaitingForBicycles.permitEntryToFirstInQueue();
-        }
-    }
-}
+//             // permit entry to first vehicle in the queue (FIFO)
+//             _vehicleWaitingForBicycles.permitEntryToFirstInQueue();
+//         }
+//     }
+// }
 
-bool BicycleIntersection::bicycleIsRiding()
-{
-   // please include this part once you have solved the final project tasks
+// bool BicycleIntersection::bicycleIsRiding()
+// {
+//    // please include this part once you have solved the final project tasks
    
-   if (_bicycles.getCurrentStatus() == BicycleRidingStatus::passingTheStreet)
-       return true;
-   else
-       return false;
+//    if (_bicycles.getCurrentStatus() == BicycleRidingStatus::passingTheStreet)
+//        return true;
+//    else
+//        return false;
    
 
-  return true; // makes traffic light permanently green
-} 
+//   return true; // makes traffic light permanently green
+// } 
 
 /* Implementation of class "VehicleWaitingForBicycle" */
 
